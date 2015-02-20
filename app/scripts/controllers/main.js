@@ -1,0 +1,12 @@
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name trianglesApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the trianglesApp
+ */
+angular.module('trianglesApp')
+  .controller('MainCtrl', function ($scope) {
+  });
