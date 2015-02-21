@@ -21,10 +21,22 @@ angular.module('trianglesApp')
         }
 
         function drawStuff () {
-          var path = new paper.Path();
-          path.strokeColor = 'black';
-          path.add(new paper.Point(50, 50));
-          path.add(new paper.Point(50, 60));
+
+          // Create a Paper.js Path to draw a line into it:
+          var path = new paper.Path.Rectangle({
+            topLeft: [50, 50],
+            bottomRight: [450, 450],
+            fillColor: {
+              gradient: {
+                stops: ['yellow', 'blue']
+              },
+              origin: [50, 50],
+              destination: [450, 450]
+            }
+          });
+
+
+          paper.view.draw();
         }
 
         initPaper();
