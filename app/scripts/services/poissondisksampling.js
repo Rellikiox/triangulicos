@@ -13,7 +13,7 @@ angular.module('trianglesApp')
   .service('Poissondisksampling', function () {
     return {
         getPoints: function (width, height) {
-            return (new PoissonDiskSampler(width, height, 30, 30)).sampleUntilSolution();
+            return (new PoissonDiskSampler(width, height, 70, 30)).sampleUntilSolution();
         }
     };
   });

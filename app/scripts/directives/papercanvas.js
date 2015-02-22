@@ -34,12 +34,51 @@ angular.module('trianglesApp')
           }
         }
 
-        function drawPath(points, closed) {
+        function drawPath(points, closed, color) {
           new paper.Path({
             segments: points,
-            strokeColor: 'black',
-            closed: closed
+            // strokeColor: 'black',
+            closed: closed,
+            fillColor: color
           });
+        }
+
+        function drawTriangles (triangles, gradient) {
+          for (var j = triangles.length - 1; j >= 0; j--) {
+            var tri = triangles[j];
+
+            var center = getCenter(tri);
+            drawPoint(center);
+
+            var color = gradient.getPixel(center);
+            drawPath(tri, true, color);
+          }
+        }
+
+        function getCenter (triangle) {
+            var center = triangle.reduce(function (prev, curr) {
+              return [prev[0] + curr[0], prev[1] + curr[1]];
+            });
+            center[0] /= 3;
+            center[1] /= 3;
+
+            return center;
+        }
+
+        function getGradient (colors) {
+          var g = new paper.Path.Rectangle({
+            topLeft: [0, 0],
+            bottomRight: [900, 700],
+            fillColor: {
+              gradient: {
+                stops: colors
+              },
+              origin: [0, 0],
+              destination: [900, 700]
+            }
+          });
+
+          return g.rasterize();
         }
 
         function drawStuff () {
@@ -50,19 +89,9 @@ angular.module('trianglesApp')
           }
 
           var triangles = Triangulation.triangulate(points);
+          var gradient = getGradient(['#ED91E8', '#E5F794', '#60C1AD', '#FEA203', '#FAE503']);
+          drawTriangles(triangles, gradient);
 
-          for (var j = triangles.length - 1; j >= 0; j--) {
-            var tri = triangles[j];
-
-            drawPath(tri, true);
-
-            var center = tri.reduce(function (prev, curr) {
-              return [prev[0] + curr[0], prev[1] + curr[1]];
-            });
-            center[0] /= 3;
-            center[1] /= 3;
-            drawPoint(center);
-          }
 
           paper.view.draw();
         }
