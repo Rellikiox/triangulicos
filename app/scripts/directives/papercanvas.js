@@ -1,5 +1,4 @@
 /*global paper:false */
-/*global Delaunay:false */
 
 'use strict';
 
@@ -10,7 +9,7 @@
  * # paperCanvas
  */
 angular.module('trianglesApp')
-  .directive('paperCanvas', ['Poissondisksampling', function (Poissondisksampling) {
+  .directive('paperCanvas', ['Poissondisksampling', 'Triangulation', function (Poissondisksampling, Triangulation) {
     return {
       template: '<canvas id="canvas" width="900" height="700"></canvas>',
       restrict: 'E',
@@ -35,10 +34,11 @@ angular.module('trianglesApp')
           }
         }
 
-        function drawPath(points) {
+        function drawPath(points, closed) {
           new paper.Path({
             segments: points,
-            strokeColor: 'black'
+            strokeColor: 'black',
+            closed: closed
           });
         }
 
@@ -49,20 +49,12 @@ angular.module('trianglesApp')
             points[i].y -= 50;
           }
 
-          var pointsArray = [];
-          for (i = 0; i < points.length; i++) {
-            pointsArray.push([points[i].x, points[i].y]);
-          }
+          var triangles = Triangulation.triangulate(points);
 
-          var triangles = Delaunay.triangulate(pointsArray);
-          i = triangles.length - 1;
-          while (i >= 0) {
-            var tri = [
-              pointsArray[triangles[i--]],
-              pointsArray[triangles[i--]],
-              pointsArray[triangles[i--]]
-            ];
-            drawPath(tri);
+          for (var j = triangles.length - 1; j >= 0; j--) {
+            var tri = triangles[j];
+
+            drawPath(tri, true);
 
             var center = tri.reduce(function (prev, curr) {
               return [prev[0] + curr[0], prev[1] + curr[1]];
