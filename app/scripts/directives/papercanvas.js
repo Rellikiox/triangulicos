@@ -81,23 +81,45 @@ angular.module('trianglesApp')
           return g.rasterize();
         }
 
-        function drawStuff () {
-          var points = Poissondisksampling.getPoints(1000, 800);
+        function createPoints(nPoints) {
+
+          points = Poissondisksampling.getPoints(1000, 800, nPoints);
+
+          console.log(points.length);
           for (var i = points.length - 1; i >= 0; i--) {
             points[i].x -= 50;
             points[i].y -= 50;
           }
 
-          var triangles = Triangulation.triangulate(points);
-          var gradient = getGradient(['#ED91E8', '#E5F794', '#60C1AD', '#FEA203', '#FAE503']);
-          drawTriangles(triangles, gradient);
+        }
 
+        function drawStuff (points, scope) {
+
+          var triangles = Triangulation.triangulate(points);
+          var gradient = getGradient([scope.topLeftColor, scope.bottomRightColor]);
+          drawTriangles(triangles, gradient);
 
           paper.view.draw();
         }
 
+        var points;
+
         initPaper();
-        drawStuff();
+        createPoints(scope.nPoints);
+
+        scope.$watchGroup(['topLeftColor', 'bottomRightColor'], function(newValues, oldValues, scope) {
+          if (points === undefined) {
+            createPoints(scope.nPoints);
+          }
+          drawStuff(points, scope);
+        });
+
+        scope.$watch('nPoints', function(newValue, oldValue, scope) {
+          if (newValue !== oldValue) {
+            createPoints(scope.nPoints);
+            drawStuff(points, scope);
+          }
+        });
       }
     };
   }]);

@@ -30,6 +30,7 @@ module.exports = function(config) {
       'bower_components/angular-touch/angular-touch.js',
       'bower_components/paper/dist/paper-full.js',
       'bower_components/delaunay-fast/delaunay.js',
+      'bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
